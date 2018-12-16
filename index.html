@@ -1,0 +1,89 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>   
+    <style type="text/css">
+      h1 {
+        font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+        text-align: center;
+        margin-bottom: 50px;
+      }
+      #ts-chart {
+        width: 80%;
+        margin: 0px auto;
+      }
+    </style> 
+</head>
+  <body>
+    <h1>Visualzing West Coast Air Quality</h1>
+    <div id="ts-chart"></div>
+  </body>
+<footer>
+    <script>
+      var seriesOptions = [],
+        seriesCounter = 0,
+        names = [
+          'Seattle-Beacon_Hill',
+          'Portland-SE_Lafaye',
+          'San_Francisco',
+          'Los_Angeles-N.Mai'
+        ];
+
+      function createChart() {
+
+        Highcharts.stockChart('ts-chart', {
+          chart: {
+            zoomType: 'x'
+          },
+          rangeSelector: {
+            selected: 4
+          },
+
+          yAxis: {
+            title: {
+              text: 'pm25'
+            },
+            plotLines: [{
+              value: 0,
+              width: 2,
+              color: 'silver'
+            }]
+          },
+
+          plotOptions: {
+            series: {
+              compare: 'percent',
+              showInNavigator: true
+            }
+          },
+
+          tooltip: {
+              pointFormat: '<b><span style="color:{series.color}">{series.name}</span>: {point.y}</b><br/>',
+              valueDecimals: 2,
+              split: true
+          },
+
+          series: seriesOptions
+        });
+      }
+
+      $.each(names, function (i, name) {
+        $.getJSON('/' + name.toLowerCase() + '.json',  function (data) {
+
+          seriesOptions[i] = {
+            name: name,
+            data: data
+          };
+
+          seriesCounter += 1;
+
+          if (seriesCounter === names.length) {
+            createChart();
+          }
+        });
+      });
+    </script>
+</footer>
+</html>
