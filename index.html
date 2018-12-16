@@ -70,7 +70,7 @@
       }
 
       $.each(names, function (i, name) {
-        $.getJSON('/' + name.toLowerCase() + '.json',  function (data) {
+        $.getJSON('/' + name + '.json',  function (data) {
 
           seriesOptions[i] = {
             name: name,
